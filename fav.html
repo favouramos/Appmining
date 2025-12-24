@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,11 +79,11 @@ button:disabled{opacity:.45}
 <div class="main">
     <div class="card primary">
         <h2>Mining Balance</h2>
-        <p id="mineBal">₦0.00</p>
+        <p id="mineBal">₦0</p>
     </div>
     <div class="card">
         <h2>Withdrawable Balance</h2>
-        <p id="withBal">₦0.00</p>
+        <p id="withBal">₦0</p>
     </div>
 
     <div class="task">
@@ -96,10 +95,9 @@ button:disabled{opacity:.45}
     <p class="timer" id="nextMine"></p>
 
     <button class="cash" id="cashBtn" disabled>Cash Out</button>
-    <!-- New Input Payment Cash Out Button -->
     <button class="inputCash" id="inputCashBtn">Input Payment / Cash Out</button>
 
-    <div class="note">React-Native style • APK ready UI</div>
+    <div class="note">Phavy • Dan</div>
 </div>
 
 <div class="page" id="cashPage">
@@ -108,7 +106,8 @@ button:disabled{opacity:.45}
         <div class="detail">Bank Name: <b>PALMPAY</b></div>
         <div class="detail">Account Name: <b>DANIEL</b></div>
         <div class="detail">Account Number: <b>8936491825</b></div>
-        <div class="detail">Amount: <b id="cashAmount">₦0.00</b></div>
+        <div class="detail">Amount: <b>₦4,300</b></div>
+
 
         <p class="timer">Time left: <span id="timer">07:00</span></p>
 
@@ -158,9 +157,9 @@ const inputCashBtn = document.getElementById('inputCashBtn');
 const nextMineEl = document.getElementById('nextMine');
 
 function updateUI(){
-    mineEl.textContent = `₦₦{mineBal.toFixed(2)}`;
-    withEl.textContent = `₦₦{withBal.toFixed(2)}`;
-    cashBtn.disabled = withBal < 80;
+    mineEl.textContent = `₦${mineBal.toLocaleString()}`;
+    withEl.textContent = `₦${withBal.toLocaleString()}`;
+    cashBtn.disabled = withBal < 80000;
 }
 updateUI();
 
@@ -169,7 +168,7 @@ setInterval(()=>{
     if(Date.now() < nextMineTime){
         let diff = Math.floor((nextMineTime-Date.now())/1000);
         let h=Math.floor(diff/3600), m=Math.floor(diff%3600/60), s=diff%60;
-        nextMineEl.textContent=`Next mining in ₦{h}:₦{m.toString().padStart(2,'0')}:₦{s.toString().padStart(2,'0')}`;
+        nextMineEl.textContent=`Next mining in ${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         mineBtn.disabled=true;
     }else{
         nextMineEl.textContent='';
@@ -187,11 +186,12 @@ mineBtn.onclick=()=>{
         if(t<=0){
             clearInterval(i);
             document.getElementById('mineModal').style.display='none';
-            mineBal+=80; withBal+=80;
-            nextMineTime=Date.now()+86400000;
-            localStorage.setItem('mineBal',mineBal);
-            localStorage.setItem('withBal',withBal);
-            localStorage.setItem('nextMine',nextMineTime);
+            mineBal += 80000;
+            withBal += 80000;
+            nextMineTime = Date.now() + 86400000;
+            localStorage.setItem('mineBal', mineBal);
+            localStorage.setItem('withBal', withBal);
+            localStorage.setItem('nextMine', nextMineTime);
             updateUI();
         }
     },1000);
@@ -204,7 +204,7 @@ cashBtn.onclick=()=>{
 function openCash(){
     document.getElementById('activationModal').style.display='none';
     document.getElementById('cashPage').style.display='flex';
-    document.getElementById('cashAmount').textContent=`₦₦{withBal.toFixed(2)}`;
+    document.getElementById('cashAmount').textContent=`₦${withBal.toLocaleString()}`;
 }
 function closeCash(){
     document.getElementById('cashPage').style.display='none';
