@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mining App</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family:Inter,system-ui,Arial;
+    background:#0b0f14;
+    color:#fff;
+    height:100vh;
+    overflow:hidden;
+}
+.app{height:100vh;display:flex;flex-direction:column}
+.navbar{
+    height:56px;
+    background:#0f172a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:600;
+    font-size:18px;
+    border-bottom:1px solid #1e293b;
+}
+.main{flex:1;padding:16px}
+.card{
+    background:#111827;
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:14px;
+}
+.card.primary{background:linear-gradient(135deg,#00c6ff,#0072ff)}
+.card h2{font-size:13px;opacity:.85}
+.card p{font-size:30px;font-weight:700;margin-top:6px}
+.task{font-size:13px;opacity:.85;margin:10px 0}
+button{
+    width:100%;padding:15px;border:none;border-radius:14px;
+    font-size:16px;font-weight:600;margin-top:12px;cursor:pointer
+}
+button:disabled{opacity:.45}
+.mine{background:#22c55e;color:#000}
+.cash{background:#f59e0b;color:#000}
+.inputCash{background:#3b82f6;color:#fff}
+.page{
+    position:fixed;inset:0;background:#0b0f14;
+    display:none;flex-direction:column
+}
+.detail{
+    background:#111827;padding:14px;border-radius:12px;
+    margin-bottom:10px;font-size:14px
+}
+.timer{text-align:center;font-size:18px;color:#ef4444;margin:14px 0}
+.modal{
+    position:fixed;inset:0;background:rgba(0,0,0,.75);
+    display:none;align-items:center;justify-content:center
+}
+.modal-box{
+    background:#111827;padding:22px;border-radius:16px;
+    width:85%;text-align:center
+}
+.loader{
+    width:42px;height:42px;border:4px solid #1f2937;
+    border-top:4px solid #22c55e;border-radius:50%;
+    margin:16px auto;animation:spin 1s linear infinite
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.note{font-size:11px;opacity:.6;text-align:center;margin-top:12px}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+<div class="navbar"> Phavy Dan Mining</div>
+
+<div class="main">
+    <div class="card primary">
+        <h2>Mining Balance</h2>
+        <p id="mineBal">$0.00</p>
+    </div>
+    <div class="card">
+        <h2>Withdrawable Balance</h2>
+        <p id="withBal">$0.00</p>
+    </div>
+
+    <div class="task">
+        ✔ Claim free tokens every day by clicking Mine  
+        <br>✔ Complete daily tasks to unlock withdrawals
+    </div>
+
+    <button class="mine" id="mineBtn">Mine Now</button>
+    <p class="timer" id="nextMine"></p>
+
+    <button class="cash" id="cashBtn" disabled>Cash Out</button>
+    <!-- New Input Payment Cash Out Button -->
+    <button class="inputCash" id="inputCashBtn">Input Payment / Cash Out</button>
+
+    <div class="note">React-Native style • APK ready UI</div>
+</div>
+
+<div class="page" id="cashPage">
+    <div class="navbar">Cash Out</div>
+    <div class="main">
+        <div class="detail">Bank Name: <b>Demo Bank</b></div>
+        <div class="detail">Account Name: <b>John Doe</b></div>
+        <div class="detail">Account Number: <b>1234567890</b></div>
+        <div class="detail">Amount: <b id="cashAmount">$0.00</b></div>
+
+        <p class="timer">Time left: <span id="timer">07:00</span></p>
+
+        <button class="mine" id="paidBtn">I have made this payment</button>
+        <button class="cash" onclick="closeCash()">Back</button>
+    </div>
+</div>
+</div>
+
+<!-- MODALS -->
+<div class="modal" id="mineModal">
+<div class="modal-box">
+<h3>Mining in progress</h3>
+<div class="loader"></div>
+<p>Mining completes in <b id="mineTimer">20</b>s</p>
+</div>
+</div>
+
+<div class="modal" id="activationModal">
+<div class="modal-box">
+<h3>Activation Required</h3>
+<p>
+Purchase your <b>one-time activation code</b> to enable withdrawals.
+</p>
+<button class="mine" onclick="openCash()">Pay Now</button>
+</div>
+</div>
+
+<div class="modal" id="verifyModal">
+<div class="modal-box">
+<h3>Hold on…</h3>
+<div class="loader"></div>
+<p>AI is verifying your account</p>
+</div>
+</div>
+
+<script>
+let mineBal = Number(localStorage.getItem('mineBal')) || 0;
+let withBal = Number(localStorage.getItem('withBal')) || 0;
+let nextMineTime = Number(localStorage.getItem('nextMine')) || 0;
+
+const mineEl = document.getElementById('mineBal');
+const withEl = document.getElementById('withBal');
+const mineBtn = document.getElementById('mineBtn');
+const cashBtn = document.getElementById('cashBtn');
+const inputCashBtn = document.getElementById('inputCashBtn');
+const nextMineEl = document.getElementById('nextMine');
+
+function updateUI(){
+    mineEl.textContent = `$${mineBal.toFixed(2)}`;
+    withEl.textContent = `$${withBal.toFixed(2)}`;
+    cashBtn.disabled = withBal < 80;
+}
+updateUI();
+
+/* DAILY TIMER */
+setInterval(()=>{
+    if(Date.now() < nextMineTime){
+        let diff = Math.floor((nextMineTime-Date.now())/1000);
+        let h=Math.floor(diff/3600), m=Math.floor(diff%3600/60), s=diff%60;
+        nextMineEl.textContent=`Next mining in ${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        mineBtn.disabled=true;
+    }else{
+        nextMineEl.textContent='';
+        mineBtn.disabled=false;
+    }
+},1000);
+
+/* MINE */
+mineBtn.onclick=()=>{
+    let t=20;
+    document.getElementById('mineModal').style.display='flex';
+    document.getElementById('mineTimer').textContent=t;
+    let i=setInterval(()=>{
+        t--;document.getElementById('mineTimer').textContent=t;
+        if(t<=0){
+            clearInterval(i);
+            document.getElementById('mineModal').style.display='none';
+            mineBal+=80; withBal+=80;
+            nextMineTime=Date.now()+86400000;
+            localStorage.setItem('mineBal',mineBal);
+            localStorage.setItem('withBal',withBal);
+            localStorage.setItem('nextMine',nextMineTime);
+            updateUI();
+        }
+    },1000);
+};
+
+/* CASH */
+cashBtn.onclick=()=>{
+    document.getElementById('activationModal').style.display='flex';
+};
+function openCash(){
+    document.getElementById('activationModal').style.display='none';
+    document.getElementById('cashPage').style.display='flex';
+    document.getElementById('cashAmount').textContent=`$${withBal.toFixed(2)}`;
+}
+function closeCash(){
+    document.getElementById('cashPage').style.display='none';
+}
+
+/* VERIFY */
+document.getElementById('paidBtn').onclick=()=>{
+    document.getElementById('verifyModal').style.display='flex';
+    setTimeout(()=>document.getElementById('verifyModal').style.display='none',4000);
+};
+
+/* INPUT PAYMENT / CASH OUT REDIRECT */
+inputCashBtn.onclick = () => {
+    window.location.href = "pay.html";
+};
+</script>
+
+</body>
+</html>

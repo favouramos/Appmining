@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome - PhavyDan Mining</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+    font-family:Inter,system-ui,Arial;
+    background:#0b0f14;
+    color:#fff;
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+}
+.main{
+    width:90%;
+    max-width:400px;
+    text-align:center;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    z-index:2;
+}
+h1{
+    font-size:24px;
+    margin-bottom:12px;
+}
+p{
+    font-size:14px;
+    opacity:.85;
+    margin-bottom:24px;
+}
+button{
+    width:100%;
+    max-width:250px;
+    padding:15px 20px;
+    font-size:16px;
+    font-weight:600;
+    border:none;
+    border-radius:14px;
+    cursor:pointer;
+    background:#22c55e;
+    color:#000;
+    margin-top:12px;
+    transition:transform 0.2s;
+}
+button:active{
+    transform:scale(0.97);
+}
+.note{
+    font-size:11px;
+    opacity:.6;
+    margin-top:12px;
+}
+
+/* Loader Modal */
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.75);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:3;
+}
+.modal-box{
+    background:#111827;
+    padding:22px;
+    border-radius:16px;
+    width:85%;
+    max-width:300px;
+    text-align:center;
+}
+.bounce-loader{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin:16px auto;
+}
+.bounce-loader div{
+    width:14px;
+    height:14px;
+    background:#22c55e;
+    border-radius:50%;
+    animation:bounce 0.6s infinite alternate;
+}
+.bounce-loader div:nth-child(2){animation-delay:0.2s;}
+.bounce-loader div:nth-child(3){animation-delay:0.4s;}
+@keyframes bounce{
+    0%{transform:translateY(0);}
+    100%{transform:translateY(-15px);}
+}
+
+/* Floating background elements */
+.float-item{
+    width:40px;
+    height:40px;
+    background:#3b82f6;
+    border-radius:50%;
+    position:absolute;
+    opacity:0.7;
+    animation:float 6s ease-in-out infinite alternate;
+}
+@keyframes float{
+    0%{transform:translate(0,0);}
+    25%{transform:translate(30px,-20px);}
+    50%{transform:translate(-20px,30px);}
+    75%{transform:translate(20px,-30px);}
+    100%{transform:translate(-30px,20px);}
+}
+
+/* Responsive for small screens */
+@media (max-width:400px){
+    h1{font-size:22px;}
+    p{font-size:13px;}
+    button{font-size:15px;}
+}
+</style>
+</head>
+<body>
+
+<div class="main">
+    <h1>Welcome to PhavyDan Mining Platform</h1>
+    <p>Make money by completing simple tasks. Get started without registration or providing your phone number.</p>
+    <button id="startBtn">I'm Ready to Earn Tokens</button>
+    <div class="note">App-style experience • Real mining vibes</div>
+</div>
+
+<!-- Floating bouncing background elements -->
+<div class="float-item" style="top:20%;left:10%;animation-duration:6s;"></div>
+<div class="float-item" style="top:40%;left:70%;animation-duration:8s;"></div>
+<div class="float-item" style="top:60%;left:30%;animation-duration:7s;"></div>
+<div class="float-item" style="top:80%;left:50%;animation-duration:5s;"></div>
+<div class="float-item" style="top:25%;left:80%;animation-duration:9s;"></div>
+
+<!-- Loader Modal -->
+<div class="modal" id="loaderModal">
+    <div class="modal-box">
+        <h3>Preparing your mining session...</h3>
+        <div class="bounce-loader">
+            <div></div><div></div><div></div>
+        </div>
+        <p>Please wait</p>
+    </div>
+</div>
+
+<script>
+const startBtn = document.getElementById('startBtn');
+const loaderModal = document.getElementById('loaderModal');
+
+startBtn.onclick = () => {
+    loaderModal.style.display = 'flex';
+    setTimeout(()=>{
+        window.location.href = "fav.html";
+    },5000);
+};
+</script>
+
+</body>
+</html>
