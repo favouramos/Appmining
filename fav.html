@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,11 +80,11 @@ button:disabled{opacity:.45}
 <div class="main">
     <div class="card primary">
         <h2>Mining Balance</h2>
-        <p id="mineBal">$0.00</p>
+        <p id="mineBal">₦0.00</p>
     </div>
     <div class="card">
         <h2>Withdrawable Balance</h2>
-        <p id="withBal">$0.00</p>
+        <p id="withBal">₦0.00</p>
     </div>
 
     <div class="task">
@@ -104,10 +105,10 @@ button:disabled{opacity:.45}
 <div class="page" id="cashPage">
     <div class="navbar">Cash Out</div>
     <div class="main">
-        <div class="detail">Bank Name: <b>Demo Bank</b></div>
-        <div class="detail">Account Name: <b>John Doe</b></div>
-        <div class="detail">Account Number: <b>1234567890</b></div>
-        <div class="detail">Amount: <b id="cashAmount">$0.00</b></div>
+        <div class="detail">Bank Name: <b>PALMPAY</b></div>
+        <div class="detail">Account Name: <b>DANIEL</b></div>
+        <div class="detail">Account Number: <b>8936491825</b></div>
+        <div class="detail">Amount: <b id="cashAmount">₦0.00</b></div>
 
         <p class="timer">Time left: <span id="timer">07:00</span></p>
 
@@ -157,8 +158,8 @@ const inputCashBtn = document.getElementById('inputCashBtn');
 const nextMineEl = document.getElementById('nextMine');
 
 function updateUI(){
-    mineEl.textContent = `$${mineBal.toFixed(2)}`;
-    withEl.textContent = `$${withBal.toFixed(2)}`;
+    mineEl.textContent = `₦₦{mineBal.toFixed(2)}`;
+    withEl.textContent = `₦₦{withBal.toFixed(2)}`;
     cashBtn.disabled = withBal < 80;
 }
 updateUI();
@@ -168,7 +169,7 @@ setInterval(()=>{
     if(Date.now() < nextMineTime){
         let diff = Math.floor((nextMineTime-Date.now())/1000);
         let h=Math.floor(diff/3600), m=Math.floor(diff%3600/60), s=diff%60;
-        nextMineEl.textContent=`Next mining in ${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        nextMineEl.textContent=`Next mining in ₦{h}:₦{m.toString().padStart(2,'0')}:₦{s.toString().padStart(2,'0')}`;
         mineBtn.disabled=true;
     }else{
         nextMineEl.textContent='';
@@ -203,7 +204,7 @@ cashBtn.onclick=()=>{
 function openCash(){
     document.getElementById('activationModal').style.display='none';
     document.getElementById('cashPage').style.display='flex';
-    document.getElementById('cashAmount').textContent=`$${withBal.toFixed(2)}`;
+    document.getElementById('cashAmount').textContent=`₦₦{withBal.toFixed(2)}`;
 }
 function closeCash(){
     document.getElementById('cashPage').style.display='none';
